@@ -121,20 +121,6 @@ public class JobLogger {
 
 ### SQL como DB. :open_file_folder:
 
-
-### POSTMAN :shipit:
-Para la solicitud de los WebMetodos.
-Algunas imagenes de como se relaciono la interaccion.
-
-<div style="width: 100%">
- <img width="49.15%" src="url-post"/>
-</div>
-
-A continuacion del mismo se adjuntara el acceso a los request de Postman.
-
-<a href="https://documenter.getpostman.com/view/12223320/T1DtfbSd?version=latest" target="_blank">ACCESO REQUEST POSTMAN<a>
-
-
 ### Pre-requisitos 📋
 
 * **Tener instalado**
