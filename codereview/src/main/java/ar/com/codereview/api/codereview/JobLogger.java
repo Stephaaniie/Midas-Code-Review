@@ -1,8 +1,10 @@
 package ar.com.codereview.api.codereview;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.util.Date;
@@ -12,6 +14,11 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import ar.com.codereview.api.codereview.exceptions.ConfigurationException;
+import ar.com.codereview.api.codereview.exceptions.NotFoundHandlerException;
+import ar.com.codereview.api.codereview.handlers.DBLogger;
+import ar.com.codereview.api.codereview.handlers.FileLogger;
 
 /*
 
@@ -36,7 +43,7 @@ public class JobLogger {
 
 	public JobLogger(boolean logToFileParam, boolean logToConsoleParam, boolean logToDatabaseParam,
 			boolean logMessageParam, boolean logWarningParam, boolean logErrorParam, Map dbParamsMap) {
-		logger = Logger.getLogger("MyLog");  
+		logger = Logger.getLogger("MyLog");
 		logError = logErrorParam;
 		logMessage = logMessageParam;
 		logWarning = logWarningParam;
@@ -46,25 +53,21 @@ public class JobLogger {
 		dbParams = dbParamsMap;
 	}
 
-	public static void LogMessage(String messageText, boolean message, boolean warning, boolean error) throws Exception {
-		messageText.trim();
+	public static void LogMessage(String messageText, boolean message, boolean warning, boolean error)
+			throws NotFoundHandlerException, ConfigurationException, SecurityException, IOException, SQLException {
+
 		if (messageText == null || messageText.length() == 0) {
 			return;
 		}
+
+		messageText.trim();
+
 		if (!logToConsole && !logToFile && !logToDatabase) {
-			throw new Exception("Invalid configuration");
+			throw new NotFoundHandlerException("Invalid configuration");
 		}
 		if ((!logError && !logMessage && !logWarning) || (!message && !warning && !error)) {
-			throw new Exception("Error or Warning or Message must be specified");
+			throw new ConfigurationException("Error or Warning or Message must be specified");
 		}
-
-		Connection connection = null;
-		Properties connectionProps = new Properties();
-		connectionProps.put("user", dbParams.get("userName"));
-		connectionProps.put("password", dbParams.get("password"));
-
-		connection = DriverManager.getConnection("jdbc:" + dbParams.get("dbms") + "://" + dbParams.get("serverName")
-				+ ":" + dbParams.get("portNumber") + "/", connectionProps);
 
 		int t = 0;
 		if (message && logMessage) {
@@ -79,16 +82,7 @@ public class JobLogger {
 			t = 3;
 		}
 
-		Statement stmt = connection.createStatement();
-
 		String l = null;
-		File logFile = new File(dbParams.get("logFileFolder") + "/logFile.txt");
-		if (!logFile.exists()) {
-			logFile.createNewFile();
-		}
-		
-		FileHandler fh = new FileHandler(dbParams.get("logFileFolder") + "/logFile.txt");
-		ConsoleHandler ch = new ConsoleHandler();
 		
 		if (error && logError) {
 			l = l + "error " + DateFormat.getDateInstance(DateFormat.LONG).format(new Date()) + messageText;
@@ -103,17 +97,17 @@ public class JobLogger {
 		}
 		
 		if(logToFile) {
-			logger.addHandler(fh);
+			logger.addHandler(FileLogger.getFileHandler(dbParams));
 			logger.log(Level.INFO, messageText);
 		}
 		
 		if(logToConsole) {
-			logger.addHandler(ch);
+			logger.addHandler(FileLogger.getFileHandler(dbParams));
 			logger.log(Level.INFO, messageText);
 		}
 		
 		if(logToDatabase) {
-			stmt.executeUpdate("insert into Log_Values('" + message + "', " + String.valueOf(t) + ")");
+			DBLogger.executeUpdate(dbParams, "insert into Log_Values('" + message + "', " + String.valueOf(t) + ")");
 		}
 	}
 }

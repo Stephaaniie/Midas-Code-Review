@@ -15,8 +15,6 @@ public class DBLogger extends StreamHandler {
 	private static Properties connectionProps;
 	private static Statement statament;
 
-    
-
 	public static void executeUpdate(Map dbParamsMap, String updateQuery) throws SQLException {
 		try {
 			dbParams = dbParamsMap;
