@@ -20,6 +20,11 @@ public class DefaultConfiguration extends LoggerConfig {
     
     public static final String MESSAGE_LOG_BD_URL = "jdbc:h2:./data/belatrixDB";
 
+    /**
+     * crea por default segun el string que recibe por property, lo evalua y
+     * devuelve el mensaje correspondiente se utilizo contantes para que el codigo
+     * se mantenible a lo largo del tiempo.
+     */
     @Override
 	public String getProperty(final String property) {
         String message = null;

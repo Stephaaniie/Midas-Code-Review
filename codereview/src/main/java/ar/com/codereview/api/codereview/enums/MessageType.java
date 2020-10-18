@@ -1,5 +1,9 @@
 package ar.com.codereview.api.codereview.enums;
 
+/**
+ * Aqui para cada tipo de mensaje se devuelve un valor int que esta asociado
+ * como su id.
+ */
 public enum MessageType {
 
     MESSAGE (1, "message"), 

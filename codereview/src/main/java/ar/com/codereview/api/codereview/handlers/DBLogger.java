@@ -11,6 +11,13 @@ import ar.com.codereview.api.codereview.exceptions.MessageException;
 import ar.com.codereview.api.codereview.interfaces.LoggerType;
 import ar.com.codereview.api.codereview.resources.BDManager;
 
+/**
+ * Clase que implemta la interface LoggerType y ademas tiene como atributo un
+ * BD manager, en el mismo se puede agregar mensajes, warning y error. Y
+ * tiene dos tipos de constructor: uno por default y otro cuando la instancia no
+ * es nula y recibira la configuracion para ser instanciada.
+ */
+
 public class DBLogger implements LoggerType {
 	
 	private BDManager manager;

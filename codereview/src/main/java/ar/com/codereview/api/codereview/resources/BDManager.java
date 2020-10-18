@@ -7,6 +7,10 @@ import java.sql.Statement;
 
 import ar.com.codereview.api.codereview.config.LoggerConfig;
 
+/**
+ * Hace la simulacion de la conexion con la BD.
+ */
+
 public class BDManager {
 
     private static BDManager instance = null;

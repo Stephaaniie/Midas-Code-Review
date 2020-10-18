@@ -8,13 +8,12 @@ import java.util.logging.FileHandler;
 import ar.com.codereview.api.codereview.config.LoggerConfig;
 import ar.com.codereview.api.codereview.exceptions.*;
 
-
+/**
+ * Instancia de la simulacion de una conexion de loggeo con un Archivo.
+ */
 
 public class FileManager implements Serializable {
 	
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 1L;
 	private LoggerConfig config;
 	

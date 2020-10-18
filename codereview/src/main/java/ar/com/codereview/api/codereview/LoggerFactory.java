@@ -5,6 +5,13 @@ import ar.com.codereview.api.codereview.config.*;
 import ar.com.codereview.api.codereview.exceptions.LoggerTypeException;
 import ar.com.codereview.api.codereview.interfaces.LoggerType;
 
+/**
+ * Tiene una sobrecarga de metodos, ambos utilizan el patron de Factory, en uno
+ * se evalua simplemente si el usuario ingresa el tipo y por defecto devuelve un
+ * tipo de loggeo por default, en cambio en el otro se espera recibir el tipo y
+ * la configuracion.
+ */
+
 public class LoggerFactory {
 	
 	public static final String FILE_LOGGER  = "File";
