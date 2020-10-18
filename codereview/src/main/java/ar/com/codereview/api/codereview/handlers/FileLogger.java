@@ -1,31 +1,40 @@
 package ar.com.codereview.api.codereview.handlers;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
-import java.util.logging.FileHandler;
+import java.util.logging.Level;
 
-public class FileLogger {
-    
-    private static Map dbParams;
+import org.apache.logging.log4j.util.Strings;
+import ar.com.codereview.api.codereview.config.LoggerConfig;
+import ar.com.codereview.api.codereview.exceptions.MessageException;
+import ar.com.codereview.api.codereview.interfaces.LoggerType;
+import ar.com.codereview.api.codereview.resources.FileManager;
+public class FileLogger implements LoggerType {
+	
+	private FileManager manager;
+	
+	public FileLogger(LoggerConfig configuration) {
+		this.manager = new FileManager(configuration);
+		logger.addHandler(this.manager.getFileHandler());
+	}
+	
+	public void addMessage(String message) {
+		if (Strings.isBlank(message)) {
+			throw new MessageException("Message must be specified");
+		}
+		logger.log(Level.INFO, message);
+	}
 
-    /*
-     * Ejecucion del logueo con archivos el mismo realiza la apertura y 
-     * se cierra luego de ser utilizado, para evitar conflictos.
-    */
+	public void addWarning(String message) {
+		if (Strings.isBlank(message)) {
+			throw new MessageException("Warning must be specified");
+		}
+		logger.log(Level.WARNING, message);
+	}
 
-    public static FileHandler getFileHandler(Map dbParamsMap) throws IOException {
-        try {
-	    	dbParams = dbParamsMap;
-	        File logFile = new File(dbParams.get("logFileFolder") + "/logFile.txt");
-	        if (!logFile.exists()) {
-	            logFile.createNewFile();
-	        }
-	        FileHandler fh = new FileHandler(dbParams.get("logFileFolder") + "/logFile.txt");
-	        return fh;
-        } catch (IOException e){
-        	e.printStackTrace();
-        	throw e;
-        }
-    }
+	public void addError(String message) {
+		if (Strings.isBlank(message)) {
+			throw new MessageException("Error must be specified");
+		}
+		logger.log(Level.SEVERE, message);
+	}
+
 }

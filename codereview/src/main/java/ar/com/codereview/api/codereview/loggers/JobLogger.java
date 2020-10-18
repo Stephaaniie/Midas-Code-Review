@@ -97,34 +97,4 @@ public class JobLogger {
     public static void setLogger(Logger logger) {
         JobLogger.logger = logger;
     }
-
-    public enum LoggerEnum {
-        OK(0),
-        MESSAGE(1),
-        ERROR(2),
-        WARNING(3);
-
-        private final int value;
-
-        private LoggerEnum(int value){
-            this.value = value;
-        }
-
-        public int getValue(){
-            return value;
-        }
-        
-        public static LoggerEnum parse(int id) {
-
-            LoggerEnum status = null;
-            
-            for(LoggerEnum item : LoggerEnum.values()) {
-                if(item.getValue() == id) {
-                    status = item;
-                }
-            }
-            return status;
-        }
-    } 
-
 }

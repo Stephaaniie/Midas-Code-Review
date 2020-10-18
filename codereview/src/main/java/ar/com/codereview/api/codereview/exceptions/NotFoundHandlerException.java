@@ -7,8 +7,9 @@ package ar.com.codereview.api.codereview.exceptions;
 
 */
 
-public class NotFoundHandlerException extends Exception {
-    public NotFoundHandlerException(String message) {
+public class NotFoundHandlerException extends RuntimeException {
+    public NotFoundHandlerException(String message, Exception e) {
         super(message);
     }
+
 }

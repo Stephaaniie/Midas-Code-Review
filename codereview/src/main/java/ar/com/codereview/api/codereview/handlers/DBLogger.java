@@ -1,34 +1,45 @@
 package ar.com.codereview.api.codereview.handlers;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Map;
-import java.util.Properties;
-import java.util.logging.StreamHandler;
+import java.text.DateFormat;
+import java.util.Date;
 
-public class DBLogger extends StreamHandler {
+import org.apache.logging.log4j.util.Strings;
 
-	private static Map dbParams;
-	private static Connection connection;
-	private static Properties connectionProps;
-	private static Statement statament;
+import ar.com.codereview.api.codereview.config.LoggerConfig;
+import ar.com.codereview.api.codereview.enums.MessageType;
+import ar.com.codereview.api.codereview.exceptions.MessageException;
+import ar.com.codereview.api.codereview.interfaces.LoggerType;
+import ar.com.codereview.api.codereview.resources.BDManager;
 
-	public static void executeUpdate(Map dbParamsMap, String updateQuery) throws SQLException {
-		try {
-			dbParams = dbParamsMap;
-			connectionProps = new Properties();
-			connectionProps.put("user", dbParams.get("userName"));
-			connectionProps.put("password", dbParams.get("password"));
-			connection = DriverManager.getConnection("jdbc:" + dbParams.get("dbms") + "://" + dbParams.get("serverName")
-					+ ":" + dbParams.get("portNumber") + "/", connectionProps);
-			statament = connection.createStatement();
-			statament.executeUpdate(updateQuery);
-		} finally {
-			connection.close();
-			statament.close();
+public class DBLogger implements LoggerType {
+	
+	private BDManager manager;
+	
+	public DBLogger(LoggerConfig configuration) {
+		this.manager = BDManager.getInstance(configuration);
+	}
+	
+	public void addMessage(String message) {
+		if (Strings.isBlank(message)) {
+			throw new MessageException("Message must be specified");
 		}
+		String errorMessage = "message " + DateFormat.getDateInstance(DateFormat.LONG).format(new Date()) + message;
+		this.manager.insertMessageBD(errorMessage, MessageType.MESSAGE.getId());
 	}
 
+	public void addWarning(String message) {
+		if (Strings.isBlank(message)) {
+			throw new MessageException("Warning must be specified");
+		}
+		String errorMessage = "warning " + DateFormat.getDateInstance(DateFormat.LONG).format(new Date()) + message;
+		this.manager.insertMessageBD(errorMessage, MessageType.WARNING.getId());
+	}
+
+	public void addError(String message) {
+		if (Strings.isBlank(message)) {
+			throw new MessageException("Error must be specified");
+		}
+		String errorMessage = "error " + DateFormat.getDateInstance(DateFormat.LONG).format(new Date()) + message;
+		this.manager.insertMessageBD(errorMessage, MessageType.ERROR.getId());
+	}
 }
